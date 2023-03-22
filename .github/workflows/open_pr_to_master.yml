@@ -1,0 +1,34 @@
+name: Create PR to master on merge to dev
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - dev
+
+jobs:
+  create_pr_to_master:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: dev
+
+      - name: Setup Git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: 'pr-to-master'
+          delete-branch: true
+          base: master
+          title: '${{ github.event.pull_request.title }}'
+          body: 'This PR was automatically created after merging the PR to the dev branch.'

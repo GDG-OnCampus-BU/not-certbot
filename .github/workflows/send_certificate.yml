@@ -3,6 +3,8 @@ name: Send Certificate
 on:
   pull_request:
     types: [closed]
+    branches:
+      - master
 
 jobs:
   send_certificate:
