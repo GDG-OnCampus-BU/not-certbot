@@ -1,0 +1,27 @@
+name: Send Certificate
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  send_certificate:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: pip install Jinja2
+
+      - name: Send certificate email
+        run: python send_certificate.py ${{ github.event.pull_request.title }}
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
