@@ -1,14 +1,12 @@
 name: Send Certificate
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
-      - master
+      - dev
 
 jobs:
   send_certificate:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,8 +20,13 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2
 
+      - name: Extract commit description
+        run: |
+          description=$(echo "${{ github.event.head_commit.message }}" | awk -v n=2 '{ if (NR > n) print }')
+          echo "COMMIT_DESCRIPTION=$description" >> $GITHUB_ENV
+
       - name: Send certificate email
-        run: python send_certificate.py ${{ github.event.pull_request.title }}
+        run: python send_certificate.py "${{ env.COMMIT_DESCRIPTION }}"
         env:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}

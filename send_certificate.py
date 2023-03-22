@@ -30,5 +30,5 @@ def send_email(email, certificate):
 
 if __name__ == "__main__":
     email = sys.argv[1]
-    certificate = render_certificate(email)
+    certificate = render_certificate(email.strip())
     send_email(email, certificate)
