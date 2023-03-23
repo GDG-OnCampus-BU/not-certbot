@@ -22,19 +22,22 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2
 
-      - name: Find .txt file
+      - name: Find .txt file and extract info
         id: find_txt
         run: |
-          txt_file=$(python find_txt.py ${{ github.sha }})
-          echo "TXT_FILE=$txt_file" >> $GITHUB_ENV
+          output=$(python find_txt.py ${{ github.sha }})
+          IFS=',' read -ra INFO <<< "$output"
+          echo "TXT_FILE=${INFO[0]}" >> $GITHUB_ENV
+          echo "NAME=${INFO[1]}" >> $GITHUB_ENV
+          echo "EMAIL=${INFO[2]}" >> $GITHUB_ENV
 
-      - name: Extract name and email from .txt file
-        id: extract_info
-        run: |
-          name=$(head -n 1 ${{ env.TXT_FILE }})
-          email=$(tail -n 1 ${{ env.TXT_FILE }})
-          echo "NAME=$name" >> $GITHUB_ENV
-          echo "EMAIL=$email" >> $GITHUB_ENV
+      # - name: Extract name and email from .txt file
+      #   id: extract_info
+      #   run: |
+      #     name=$(head -n 1 ${{ env.TXT_FILE }})
+      #     email=$(tail -n 1 ${{ env.TXT_FILE }})
+      #     echo "NAME=$name" >> $GITHUB_ENV
+      #     echo "EMAIL=$email" >> $GITHUB_ENV
 
       - name: Get commit hash
         run: |

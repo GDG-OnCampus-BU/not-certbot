@@ -19,8 +19,14 @@ def find_txt(commit_sha):
 
     return txt_files[0]
 
+def extract_info(txt_file):
+    with open(txt_file, 'r') as file:
+        name = file.readline().strip()
+        email = file.readline().strip()
+    return name, email
+
 if __name__ == "__main__":
     commit_sha = sys.argv[1]
     txt_file = find_txt(commit_sha)
-    print(txt_file)
-
+    name, email = extract_info(txt_file)
+    print(f"{txt_file},{name},{email}")
