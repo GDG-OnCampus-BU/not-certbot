@@ -22,16 +22,9 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2 requests
 
-
-      - name: Get previous commit SHA
-        id: previous_commit_sha
-        run: |
-          PREVIOUS_COMMIT_SHA=$(git rev-list --skip=1 -n 1 ${{ github.sha }})
-          echo "PREVIOUS_COMMIT_SHA=$PREVIOUS_COMMIT_SHA" >> $GITHUB_ENV
-
       - name: Find .txt file and extract info
         run: |
-          output=$(python find_txt.py ${{ env.PREVIOUS_COMMIT_SHA }})
+          output=$(python find_txt.py $(git rev-list --skip=1 -n 1 ${{ github.sha }})
           IFS=$'\n' read -d '' -r -a arr <<< "$output"
           txt_file=${arr[0]}
           name=${arr[1]}
