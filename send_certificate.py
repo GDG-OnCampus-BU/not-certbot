@@ -1,6 +1,7 @@
 import os
 import sys
 import smtplib
+import requests
 from datetime import date
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -29,8 +30,12 @@ def send_email(email, certificate):
         server.sendmail(sender_email, email, msg.as_string())
 
 if __name__ == "__main__":
-    email = sys.argv[1]
-    name = sys.argv[2]
-    commit_hash = sys.argv[3]
-    certificate = render_certificate(name=name, hash=commit_hash)
-    send_email(email, certificate)
+    try:
+        email = sys.argv[1]
+        name = sys.argv[2]
+        commit_hash = sys.argv[3]
+        certificate = render_certificate(name=name, hash=commit_hash)
+        send_email(email, certificate)
+    except Exception as e:
+        r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", data={"error": e})
+
