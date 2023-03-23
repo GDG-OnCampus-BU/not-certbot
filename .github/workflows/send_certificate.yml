@@ -3,7 +3,9 @@ name: Send Certificate
 on:
   push:
     branches:
-      - dev
+      - master
+    paths:
+      - 'contributions/**/*.txt'
 
 jobs:
   send_certificate:
@@ -20,13 +22,27 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2
 
-      - name: Extract commit description
+      - name: Find .txt file
+        id: find_txt
         run: |
-          description=$(echo "${{ github.event.head_commit.message }}" | awk -v n=2 '{ if (NR > n) print }')
-          echo "COMMIT_DESCRIPTION=$description" >> $GITHUB_ENV
+          txt_file=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep .txt)
+          echo "TXT_FILE=$txt_file" >> $GITHUB_ENV
+
+      - name: Extract name and email from .txt file
+        id: extract_info
+        run: |
+          name=$(head -n 1 ${{ env.TXT_FILE }})
+          email=$(tail -n 1 ${{ env.TXT_FILE }})
+          echo "NAME=$name" >> $GITHUB_ENV
+          echo "EMAIL=$email" >> $GITHUB_ENV
+
+      - name: Get commit hash
+        run: |
+          short_commit_hash=${{ github.sha }} && short_commit_hash=${short_commit_hash::7}
+          echo "SHORT_COMMIT_HASH=$short_commit_hash" >> $GITHUB_ENV
 
       - name: Send certificate email
-        run: python send_certificate.py "${{ env.COMMIT_DESCRIPTION }}"
+        run: python send_certificate.py "${{ env.NAME }}" "${{ env.EMAIL }}" "${{ env.SHORT_COMMIT_HASH }}"
         env:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}

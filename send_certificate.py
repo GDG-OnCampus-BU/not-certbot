@@ -30,5 +30,7 @@ def send_email(email, certificate):
 
 if __name__ == "__main__":
     email = sys.argv[1]
-    certificate = render_certificate(email.strip())
+    name = sys.argv[2]
+    commit_hash = sys.argv[3]
+    certificate = render_certificate(name=name, hash=commit_hash)
     send_email(email, certificate)
