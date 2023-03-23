@@ -25,7 +25,11 @@ jobs:
       - name: Find .txt file
         id: find_txt
         run: |
-          txt_file=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep .txt)
+          txt_file=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep 'contributions/.*\.txt$')
+          if [[ -z "$txt_file" ]]; then
+            echo "No .txt file found in 'contributions' folder."
+            exit 1
+          fi
           echo "TXT_FILE=$txt_file" >> $GITHUB_ENV
 
       - name: Extract name and email from .txt file
