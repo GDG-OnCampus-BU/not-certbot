@@ -26,3 +26,6 @@ jobs:
 
       - name: Find .txt file and extract info and call the other script
         run: python find_txt.py ${{ github.sha }}
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
