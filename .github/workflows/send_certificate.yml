@@ -22,22 +22,24 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2 requests
 
-      - name: Find .txt file and extract info
-        id: find_txt
+      - name: Get file diff between current commit and previous commit
         run: |
-          output=$(python find_txt.py ${{ github.sha }})
-          IFS=',' read -ra INFO <<< "$output"
-          echo "TXT_FILE=${INFO[0]}" >> $GITHUB_ENV
-          echo "NAME=${INFO[1]}" >> $GITHUB_ENV
-          echo "EMAIL=${INFO[2]}" >> $GITHUB_ENV
+          PREVIOUS_COMMIT=$(git rev-list --skip=1 -n 1 ${{ github.sha }})  # Get previous commit hash
+          DIFF_OUTPUT=$(git diff --name-only $PREVIOUS_COMMIT ${{ github.sha }})  # Get the file diff
+          echo "DIFF_OUTPUT=$DIFF_OUTPUT" >> $GITHUB_ENV
 
-      # - name: Extract name and email from .txt file
-      #   id: extract_info
-      #   run: |
-      #     name=$(head -n 1 ${{ env.TXT_FILE }})
-      #     email=$(tail -n 1 ${{ env.TXT_FILE }})
-      #     echo "NAME=$name" >> $GITHUB_ENV
-      #     echo "EMAIL=$email" >> $GITHUB_ENV
+      - name: Find .txt file and extract info
+        run: |
+          txt_file=$(echo "$DIFF_OUTPUT" | grep 'contributions/.*\.txt$')
+          if [[ -z "$txt_file" ]]; then
+            echo "No .txt file found in 'contributions' folder or multiple .txt files found."
+            exit 1
+          fi
+          name=$(head -n 1 "$txt_file")
+          email=$(sed -n '2p' "$txt_file")
+          echo "TXT_FILE=$txt_file" >> $GITHUB_ENV
+          echo "NAME=$name" >> $GITHUB_ENV
+          echo "EMAIL=$email" >> $GITHUB_ENV
 
       - name: Get commit hash
         run: |
