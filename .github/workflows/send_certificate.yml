@@ -25,7 +25,7 @@ jobs:
       - name: Find .txt file
         id: find_txt
         run: |
-          txt_file=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep 'contributions/.*\.txt$')
+          txt_file=$(git diff --name-only --diff-filter=A ${{ github.sha }} | grep 'contributions/.*\.txt$')
           if [[ -z "$txt_file" ]]; then
             echo "No .txt file found in 'contributions' folder."
             exit 1
