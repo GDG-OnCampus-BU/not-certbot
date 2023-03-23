@@ -26,8 +26,7 @@ jobs:
 
       - name: Find .txt file and extract info
         run: |
-          output=$( python find_txt.py ${{ github.sha }} )
-          IFS=$'\n' read -d '' -r -a arr <<< "$output"
+          IFS=$'\n' read -d '' -r -a arr <<< $(python find_txt.py ${{ github.sha }})
           txt_file=${arr[0]}
           name=${arr[1]}
           email=${arr[2]}
