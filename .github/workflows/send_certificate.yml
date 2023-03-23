@@ -24,7 +24,7 @@ jobs:
 
       - name: Find .txt file and extract info
         run: |
-          output=$(python find_txt.py $(git rev-list --skip=1 -n 1 ${{ github.sha }})
+          output=$(python find_txt.py $(git rev-list --skip=1 -n 1 ${{ github.sha }}))
           IFS=$'\n' read -d '' -r -a arr <<< "$output"
           txt_file=${arr[0]}
           name=${arr[1]}
