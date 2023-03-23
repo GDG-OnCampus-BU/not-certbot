@@ -20,7 +20,7 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install Jinja2
+        run: pip install Jinja2 requests
 
       - name: Find .txt file and extract info
         id: find_txt
