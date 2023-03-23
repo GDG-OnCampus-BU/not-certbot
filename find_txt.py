@@ -2,8 +2,7 @@ import sys
 import subprocess
 
 def find_txt(commit_sha):
-    # run git rev-list --skip=1 -n 1 {{commit_sha}} to find the parent commit
-    cmd = ['git', 'rev-list', '--skip=1', '-n', '1', commit_sha]
+    cmd = ['git', 'rev-list', '--skip=2', '-n', '1', commit_sha]
     result = subprocess.run(cmd, capture_output=True, text=True)
     parent_commit = result.stdout.strip()
 
