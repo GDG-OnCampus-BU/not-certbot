@@ -38,7 +38,7 @@ jobs:
 
       - name: Get commit hash
         run: |
-          short_commit_hash=${{ github.sha }} && short_commit_hash=${short_commit_hash::7}
+          short_commit_hash=${{ github.sha }} && short_commit_hash=${short_commit_hash}
           echo "SHORT_COMMIT_HASH=$short_commit_hash" >> $GITHUB_ENV
 
       - name: Send certificate email
