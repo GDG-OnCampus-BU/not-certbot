@@ -24,23 +24,5 @@ jobs:
       - name: Install dependencies
         run: pip install Jinja2 requests
 
-      - name: Find .txt file and extract info
-        run: |
-          IFS=$'\n' read -d '' -r -a arr <<< $(python find_txt.py ${{ github.sha }})
-          txt_file=${arr[0]}
-          name=${arr[1]}
-          email=${arr[2]}
-          echo "TXT_FILE=$txt_file" >> $GITHUB_ENV
-          echo "NAME=$name" >> $GITHUB_ENV
-          echo "EMAIL=$email" >> $GITHUB_ENV
-
-      - name: Get commit hash
-        run: |
-          short_commit_hash=${{ github.sha }} && short_commit_hash=${short_commit_hash}
-          echo "SHORT_COMMIT_HASH=$short_commit_hash" >> $GITHUB_ENV
-
-      - name: Send certificate email
-        run: python send_certificate.py "${{ env.NAME }}" "${{ env.EMAIL }}" "${{ env.SHORT_COMMIT_HASH }}"
-        env:
-          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
-          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+      - name: Find .txt file and extract info and call the other script
+        run: python find_txt.py ${{ github.sha }}
