@@ -1,20 +1,20 @@
 import os
 import sys
+import requests
 import smtplib
-from datetime import date
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Template
 
-def render_certificate(email):
+def render_certificate(name, hash):
     with open("certificate_template.html") as file:
         template = Template(file.read())
-    certificate = template.render(email=email, date=date)
+    certificate = template.render(name=name, hash=hash)
     return certificate
 
 def send_email(email, certificate):
-    sender_email = os.environ.get("SENDER_EMAIL")
-    sender_password = os.environ.get("SENDER_PASSWORD")
+    sender_email = os.environ["SENDER_EMAIL"]
+    sender_password = os.environ["SENDER_PASSWORD"]
 
     msg = MIMEMultipart()
     msg["From"] = sender_email
@@ -29,6 +29,13 @@ def send_email(email, certificate):
         server.sendmail(sender_email, email, msg.as_string())
 
 if __name__ == "__main__":
-    email = sys.argv[1]
-    certificate = render_certificate(email.strip())
-    send_email(email, certificate)
+    try:
+        email = sys.argv[1]
+        name = sys.argv[2]
+        commit_hash = sys.argv[3]
+        certificate = render_certificate(name=name, hash=commit_hash)
+        send_email(email, certificate)
+    except Exception as e:
+        # send debugging info to webhook
+        r = requests.post("https://eoocbx7516lph8v.m.pipedream.net", json={"content": f"Error: {e}"})
+

@@ -3,7 +3,9 @@ name: Send Certificate
 on:
   push:
     branches:
-      - dev
+      - master
+    paths:
+      - 'contributions/**/*.txt'
 
 jobs:
   send_certificate:
@@ -11,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -18,15 +22,10 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install Jinja2
+        run: pip install Jinja2 requests
 
-      - name: Extract commit description
-        run: |
-          description=$(echo "${{ github.event.head_commit.message }}" | awk -v n=2 '{ if (NR > n) print }')
-          echo "COMMIT_DESCRIPTION=$description" >> $GITHUB_ENV
-
-      - name: Send certificate email
-        run: python send_certificate.py "${{ env.COMMIT_DESCRIPTION }}"
+      - name: Find .txt file and extract info and call the other script
+        run: python find_txt.py ${{ github.sha }}
         env:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}

@@ -1,60 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+  <head>
+    <title>Congratulations on your first PR!</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .certificate {
-            width: 800px;
-            height: 600px;
-            padding: 20px;
-            text-align: center;
-            border: 5px solid #ccc;
-            background-color: #fff;
-            margin: 50px auto;
-            position: relative;
-        }
-        .content {
-            padding: 50px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        h1 {
-            font-size: 50px;
-            text-transform: uppercase;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        h2 {
-            font-size: 24px;
-            margin-bottom: 30px;
-        }
-        p {
-            font-size: 18px;
-            line-height: 1.6;
-            color: #666;
-            margin-bottom: 30px;
-        }
-        .email {
-            font-weight: bold;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f2f2f2;
+      }
+
+      .box {
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+      }
+
+      h1, p {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      p {
+        font-size: 1.1rem;
+        color: #444;
+      }
+
+      a {
+        color: #00bfff;
+      }
     </style>
-</head>
-<body>
-    <div class="certificate">
-        <div class="content">
-            <h1>Certificate of Achievement</h1>
-            <h2>This is to certify that</h2>
-            <p class="email">{{ email }}</p>
-            <p>has successfully completed the course and earned this certificate as a token of recognition for their dedication and hard work.</p>
-            <p>Date: {{ date.today().strftime("%B %d, %Y") }}</p>
-        </div>
+  </head>
+  <body>
+    <div class="box">
+      <h1>Congratulations on your first PR, {{ name }}!</h1>
+      <p>We are thrilled to have you as a contributor to our project.</p>
+      <p>Your contribution has been successfully received and merged into our codebase. You can find your PR at:</p>
+      <p><a href="https://github.com/DSC-Bennett-University/not-certbot/commit/{{ hash }}">Your commit as a proof!</a></p>
+      <p>Thank you again for your contribution and we hope to see more from you in the future!</p>
     </div>
-</body>
+  </body>
 </html>
+
